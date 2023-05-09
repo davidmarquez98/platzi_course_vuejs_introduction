@@ -15,20 +15,51 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    text: "Puerta Cerrada",
-                    door: false
+                    text: "Sesion Cerrada",
+                    door: false,
+                    username: "",
+                    validation: false
                 }
             },
             watch:{
-                door(value){
-                    this.text = value ? "Puerta Abierta" : "Puerta Cerrada";
+                username(value){
+                    this.validation = value != "";                 
+                }
+            },
+            methods: {
+                changeSession(){
+                    if(this.door){
+                        this.text = "Sesion Cerrada";
+                        this.username = "";
+                        this.door = false;
+                        this.validation = false;
+                    }
+
+                    if(this.validation){
+                        this.text = "Sesion Abierta";
+                        this.door = true;
+                    }
                 }
             },
             template: `
             <div class="container" :class="{ opened : door, closed : !door}">
                 <div class="container-text-button">
                     <div class="container-message">{{text}}</div> 
-                    <button class="button-door" @click="door = !door">{{ door ? "Cerrar" : "Abrir" }}</button>
+                    <div v-if="!door">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" v-model="username"/>
+                    </div>
+                    <div v-else>
+                        <p>Hola {{username}}, Bienvenido!</p>
+                        <div class="list">
+                            <div class="item">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="button-door" @click="this.changeSession()">
+                        <div v-if="door">Cerrar</div>
+                        <div v-else>Abrir</div>
+                    </button>
                 </div>
             </div>
             `
@@ -60,6 +91,8 @@
         }
 
         .button-door{
+            border-radius: 10px;
+            border: solid 1px black;
             width: 80px;
             height: 40px;
             margin:auto;
