@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <div id="app"></div>
+</head>
+
+<body>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+
+        const app = Vue.createApp({
+            data(){
+                return{
+                    items:["uno", "dos", "tres"]
+                }
+            },
+            methods:{
+                remove(i){
+                    this.items = this.items.filter((el, index) =>  index != i );
+                }
+            },
+            template: `
+            <div>
+                <ul> 
+                    <v-item ref="component" v-for="(item, i) in items" :text="item" @remove="remove(i)"></v-item>
+                </ul>
+            </div>
+            `
+        });
+        
+        app.component("v-item", {
+            props:{
+                text: String
+            },
+            methods:{
+                rm(){
+                    this.$emit("remove");
+                }
+            },
+            template:`
+            <li @click="rm">{{text}}</li>
+            `
+        });
+
+        const vm = app.mount("#app");
+
+        console.log(vm.$refs.component);
+        console.log(vm.$el);
+
+    </script>
+
+</body>
+
+</html>
